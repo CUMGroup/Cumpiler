@@ -6,6 +6,7 @@ using Cumpiler.Lexer.Common.Interfaces;
 using Cumpiler.Lexer.Common.Text;
 using Cumpiler.Lexer.Common.Tokens;
 using Cumpiler.Lexer.SateMachines;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cumpiler.Lexer
 {
@@ -44,7 +45,6 @@ namespace Cumpiler.Lexer
         public Token Expect(TokenType type) {
             if(type != LookAhead.Type) {
                 ThrowCompilerException($"Unexpected Token {_currentToken}", type.ToString());
-                throw new Exception("should not get here lel");
             }
             return Advance();
         }
@@ -55,10 +55,15 @@ namespace Cumpiler.Lexer
             Advance();
         }
 
+        [DoesNotReturn]
         public void ThrowCompilerException(string reason, string? expected) {
+            throw CreateCompilerException(reason, expected);
+        }
+
+        public CompilerException CreateCompilerException(string reason, string? expected) {
             string reasonMsg = $"{reason}\nat line {_input?.LinePos ?? 0}\n{_input?.GetMarkedCodeSnippetAtCurrentPos() ?? ""}";
             string expectedMsg = !String.IsNullOrWhiteSpace(expected) ? "Expected: " + expected : string.Empty;
-            throw new CompilerException($"{reasonMsg}\n{expectedMsg}");
+            return new CompilerException($"{reasonMsg}\n{expectedMsg}");
         }
 
         #endregion
@@ -94,7 +99,6 @@ namespace Cumpiler.Lexer
 
             if (bestMatch is null) {
                 ThrowCompilerException($"Unexpected Token {_currentToken?.Type.ToString() ?? ""}", null);
-                throw new Exception("Should not get here lel");
             }
 
 

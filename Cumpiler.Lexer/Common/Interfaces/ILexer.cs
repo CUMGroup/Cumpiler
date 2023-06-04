@@ -1,4 +1,5 @@
-﻿using Cumpiler.Lexer.Common.Tokens;
+﻿using Cumpiler.Lexer.Common.Exceptions;
+using Cumpiler.Lexer.Common.Tokens;
 
 namespace Cumpiler.Lexer.Common.Interfaces {
     public interface ILexer {
@@ -13,6 +14,8 @@ namespace Cumpiler.Lexer.Common.Interfaces {
 
         bool Accept(TokenType type);
 
-        void ThrowCompilerException(string reason, string expected);
+        void ThrowCompilerException(string reason, string? expected);
+
+        CompilerException CreateCompilerException(string reason, string? expected);
     }
 }
