@@ -7,8 +7,6 @@ namespace Cumpiler.Lexer.SateMachines {
         private readonly string _keyword;
         private readonly TokenType _type;
 
-        private State? _start;
-
         public KeywordMachine(string keyword, TokenType type) {
             _keyword = keyword;
             _type = type;
@@ -16,10 +14,6 @@ namespace Cumpiler.Lexer.SateMachines {
 
         public override TokenType GetTokenType() {
             return _type;
-        }
-
-        protected override State GetStartState() {
-            return _start ?? throw new NullReferenceException("Start state not defined!");
         }
 
         protected override void InitStateTable() {

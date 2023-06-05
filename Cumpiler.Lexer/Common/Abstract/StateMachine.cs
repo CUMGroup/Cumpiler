@@ -13,13 +13,18 @@ namespace Cumpiler.Lexer.Common.Abstract {
         private InputReader? _inputReader;
         public State? CurrentState { get; private set; }
 
+        protected State? _start;
+
         public StateMachine() {
             _stateList = new List<State>();
         }
 
         protected abstract void InitStateTable();
-        protected abstract State GetStartState();
         public abstract TokenType GetTokenType();
+
+        protected State GetStartState() {
+            return _start ?? throw new NullReferenceException("_start State not defined!");
+        }
 
         protected State AddState(State state) {
             _stateList.Add(state);
