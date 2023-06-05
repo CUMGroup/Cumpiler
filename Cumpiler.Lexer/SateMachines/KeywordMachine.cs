@@ -4,20 +4,34 @@ using Cumpiler.Lexer.Common.Tokens;
 namespace Cumpiler.Lexer.SateMachines {
     internal class KeywordMachine : StateMachine {
 
+        private readonly string _keyword;
+        private readonly TokenType _type;
+
+        private State? _start;
+
         public KeywordMachine(string keyword, TokenType type) {
-            
+            _keyword = keyword;
+            _type = type;
         }
 
         public override TokenType GetTokenType() {
-            throw new NotImplementedException();
+            return _type;
         }
 
         protected override State GetStartState() {
-            throw new NotImplementedException();
+            return _start ?? throw new NullReferenceException("Start state not defined!");
         }
 
         protected override void InitStateTable() {
-            throw new NotImplementedException();
+            _start = new State("start", false);
+            var currentState = _start;
+            for(int i = 0; i < _keyword.Length; ++i) {
+                var name = _keyword[..(i + 1)];
+                var state = new State(name, i == _keyword.Length - 1);
+                currentState.AddTransition(state, _keyword[i]);
+                currentState = state;
+                AddState(state);
+            }
         }
     }
 }

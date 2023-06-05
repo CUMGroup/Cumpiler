@@ -38,7 +38,8 @@
         }
 
         public State? GetTransition(char terminal) {
-            return _transitions[terminal];
+            _transitions.TryGetValue(terminal, out State? transition);
+            return transition;
         }
     }
 }

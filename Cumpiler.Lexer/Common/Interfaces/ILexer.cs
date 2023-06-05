@@ -10,6 +10,8 @@ namespace Cumpiler.Lexer.Common.Interfaces {
 
         Token Advance();
 
+        List<Token> AdvanceTillEOF();
+
         Token Expect(TokenType type);
 
         bool Accept(TokenType type);

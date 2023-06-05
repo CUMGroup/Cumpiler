@@ -49,6 +49,14 @@ namespace Cumpiler.Lexer
             return Advance();
         }
 
+        public List<Token> AdvanceTillEOF() {
+            var tokens = new List<Token>();
+            do {
+                tokens.Add(Advance());
+            } while (tokens.Last()?.Type is not (null or TokenType.EOF));
+            return tokens;
+        }
+
         public void Init(string input) {
             _input = new MultilineInputReader(input);
             _currentToken = null;
