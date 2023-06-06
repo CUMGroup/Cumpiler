@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cumpiler.Lexer", "Cumpiler.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cumpiler.UnitTests", "Cumpiler.UnitTests\Cumpiler.UnitTests.csproj", "{109F0BD7-AB70-48AF-B021-5BB7301C3B16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cumpiler.Syntax", "Cumpiler.Syntax\Cumpiler.Syntax.csproj", "{C9315B4D-6D92-4A87-8B30-38C2384C2394}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{109F0BD7-AB70-48AF-B021-5BB7301C3B16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{109F0BD7-AB70-48AF-B021-5BB7301C3B16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{109F0BD7-AB70-48AF-B021-5BB7301C3B16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9315B4D-6D92-4A87-8B30-38C2384C2394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9315B4D-6D92-4A87-8B30-38C2384C2394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9315B4D-6D92-4A87-8B30-38C2384C2394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9315B4D-6D92-4A87-8B30-38C2384C2394}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
