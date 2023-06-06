@@ -22,10 +22,6 @@
             return $"{Type} {Value}";
         }
 
-        public bool IsSkipable() {
-            return Type is TokenType.WHITESPACE or TokenType.LINECOMMENT or TokenType.MULTILINECOMMENT;
-        }
-
         public static Token EOF() {
             return EOF(0, 0);
         }

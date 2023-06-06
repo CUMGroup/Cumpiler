@@ -5,11 +5,16 @@
         
         // Numbers
         INTEGER,
-        DECIMAL,
+        FLOAT,
+        DOUBLE,
 
         // Strings
         STRING,
         CHAR,
+
+        // Bools
+        TRUE,
+        FALSE,
 
         // ()[]{}
         LPAREN,

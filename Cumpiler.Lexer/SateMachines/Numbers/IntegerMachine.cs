@@ -28,18 +28,18 @@ namespace Cumpiler.Lexer.SateMachines.Numbers {
              * 1235Y
              */
 
-            _start = AddState(new State("start", false));
-            var decimalSystemNumberState = AddState(new State("decimalNumber", true));
-            var decimalUnderscoreState = AddState(new State("decimalUnderscore", false));
-            var firstZeroState = AddState(new State("firstZero", true));
+            _start = AddState(new State());
+            var decimalSystemNumberState = AddState(new State(true));
+            var decimalUnderscoreState = AddState(new State());
+            var firstZeroState = AddState(new State(true));
 
-            var binaryNumberFirstState = AddState(new State("binaryNumberFirst", false));
-            var binaryNumberState = AddState(new State("binaryNumber", true));
-            var binaryUnderscoreState = AddState(new State("binaryUnderscore", false));
+            var binaryNumberFirstState = AddState(new State());
+            var binaryNumberState = AddState(new State(true));
+            var binaryUnderscoreState = AddState(new State());
 
-            var hexNumberFirstState = AddState(new State("hexNumberFirst", false));
-            var hexNumberState = AddState(new State("hexNumber", true));
-            var hexNumberUnderscoreState = AddState(new State("hexNumberUnderscore", false));
+            var hexNumberFirstState = AddState(new State());
+            var hexNumberState = AddState(new State(true));
+            var hexNumberUnderscoreState = AddState(new State());
 
             _start
                 .AddTransitionRange(decimalSystemNumberState, '1', '9')

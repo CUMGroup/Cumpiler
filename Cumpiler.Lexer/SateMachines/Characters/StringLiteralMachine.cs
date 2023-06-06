@@ -9,10 +9,10 @@ namespace Cumpiler.Lexer.SateMachines.Characters {
         }
 
         protected override void InitStateTable() {
-            _start = new State("start", false);
-            var innerState = AddState(new State("inner", false));
-            var escapedState = AddState(new State("escaped", false));
-            var endState = AddState(new State("end", true));
+            _start = new State();
+            var innerState = AddState(new State());
+            var escapedState = AddState(new State());
+            var endState = AddState(new State(true));
 
             _start.AddTransition(innerState, '\"');
 

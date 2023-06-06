@@ -17,11 +17,11 @@ namespace Cumpiler.Lexer.SateMachines {
         }
 
         protected override void InitStateTable() {
-            _start = new State("start", false);
+            _start = new State();
             var currentState = _start;
             for(int i = 0; i < _keyword.Length; ++i) {
                 var name = _keyword[..(i + 1)];
-                var state = new State(name, i == _keyword.Length - 1);
+                var state = new State(i == _keyword.Length - 1);
                 currentState.AddTransition(state, _keyword[i]);
                 currentState = state;
                 AddState(state);

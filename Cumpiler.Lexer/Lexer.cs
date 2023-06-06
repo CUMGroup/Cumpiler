@@ -5,6 +5,7 @@ using Cumpiler.Lexer.Common.Info;
 using Cumpiler.Lexer.Common.Interfaces;
 using Cumpiler.Lexer.Common.Text;
 using Cumpiler.Lexer.Common.Tokens;
+using Cumpiler.Lexer.Helpers;
 using Cumpiler.Lexer.SateMachines;
 using System.Diagnostics.CodeAnalysis;
 

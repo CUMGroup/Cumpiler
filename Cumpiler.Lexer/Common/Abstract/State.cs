@@ -1,16 +1,14 @@
 ﻿namespace Cumpiler.Lexer.Common.Abstract {
     internal class State {
 
-        public string Name { get; private init; }
         public bool IsFinalState { get; private init; }
 
         private readonly Dictionary<char, State> _transitions;
 
-        public State(string name) : this(name, false) { }
+        public State() : this(false) { }
 
 
-        public State(string name, bool isFinalState) {
-            this.Name = name;
+        public State(bool isFinalState) {
             this.IsFinalState = isFinalState;
             this._transitions = new Dictionary<char, State>();
         }
