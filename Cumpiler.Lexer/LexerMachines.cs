@@ -43,24 +43,24 @@ namespace Cumpiler.Lexer {
             AddKeywordMachine(";", TokenType.SEMICOLON);
             AddKeywordMachine(",", TokenType.COMMA);
             AddKeywordMachine("=", TokenType.ASSIGN);
+            
+            AddKeywordMachine("print", TokenType.PRINT);
+            AddKeywordMachine("var", TokenType.VAR);
+            AddKeywordMachine("const", TokenType.CONST);
+            AddKeywordMachine("if", TokenType.IF);
+            AddKeywordMachine("else", TokenType.ELSE);
+            AddKeywordMachine("while", TokenType.WHILE);
+            AddKeywordMachine("do", TokenType.DO);
+            AddKeywordMachine("for", TokenType.FOR);
+            AddKeywordMachine("break", TokenType.BREAK);
+            AddKeywordMachine("switch", TokenType.SWITCH);
+            AddKeywordMachine("case", TokenType.CASE);
+            AddKeywordMachine("fun", TokenType.FUN);
+            AddKeywordMachine("return", TokenType.RETURN);
+            AddKeywordMachine("default", TokenType.DEFAULT);
 
-            AddKeywordMachine("PRINT", TokenType.PRINT);
-            AddKeywordMachine("VAR", TokenType.VAR);
-            AddKeywordMachine("CONST", TokenType.CONST);
-            AddKeywordMachine("IF", TokenType.IF);
-            AddKeywordMachine("ELSE", TokenType.ELSE);
-            AddKeywordMachine("WHILE", TokenType.WHILE);
-            AddKeywordMachine("DO", TokenType.DO);
-            AddKeywordMachine("FOR", TokenType.FOR);
-            AddKeywordMachine("BREAK", TokenType.BREAK);
-            AddKeywordMachine("SWITCH", TokenType.SWITCH);
-            AddKeywordMachine("CASE", TokenType.CASE);
-            AddKeywordMachine("FUN", TokenType.FUN);
-            AddKeywordMachine("RETURN", TokenType.RETURN);
-            AddKeywordMachine("DEFAULT", TokenType.DEFAULT);
-
-            AddKeywordMachine("TRUE", TokenType.TRUE);
-            AddKeywordMachine("FALSE", TokenType.FALSE);
+            AddKeywordMachine("true", TokenType.TRUE);
+            AddKeywordMachine("false", TokenType.FALSE);
 
             AddMachine(new IdentifierMachine());
         }

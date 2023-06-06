@@ -7,7 +7,7 @@ namespace Cumpiler.UnitTests.Lexer {
 
         [Fact]
         public void Lexer_MatchesKeywordsBeforeIdentifier() {
-            var lexer = LexerFactory.CreateLexer("IF FUN heLoWorld wasGeht 1");
+            var lexer = LexerFactory.CreateLexer("if fun heLoWorld wasGeht 1");
 
             var tokens = lexer.AdvanceTillEOF();
 
