@@ -18,5 +18,18 @@ namespace Cumpiler.UnitTests.Lexer {
             Assert.Equal(tokens.Select(e => e.Type).ToList(), expected);
         }
 
+        [Fact]
+        public void Lexer_PutsEOF_AtEmpty() {
+            var lexer = LexerFactory.CreateLexer("");
+
+            var tokens = lexer.AdvanceTillEOF();
+
+            var expected = new List<TokenType> {
+                TokenType.EOF
+            };
+
+            Assert.Equal(tokens.Select(e => e.Type).ToList(), expected);
+        }
+
     }
 }
