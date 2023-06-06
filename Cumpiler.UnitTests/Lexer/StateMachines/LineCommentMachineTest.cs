@@ -16,6 +16,7 @@ namespace Cumpiler.UnitTests.Lexer.StateMachines {
             Assert.True(machine.IsInFinalState());
         }
 
+        [Fact]
         public void Machine_ShouldNotAccept_OneSlash() {
             var machine = new LineCommentMachine();
 
