@@ -12,7 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Cumpiler.Lexer
 {
 
-    internal class Lexer : ILexer, INdaLexing {
+    internal partial class Lexer : ILexer, INdaLexing {
 
         private readonly List<MachineInfo> _machines;
         private MultilineInputReader? _input;
@@ -78,10 +78,6 @@ namespace Cumpiler.Lexer
         #endregion
 
         #region NDA
-
-        private void AddLexerMachines() {
-            throw new NotImplementedException();
-        }
 
         public void AddKeywordMachine(string keyword, TokenType type) {
             _machines.Add(new KeywordMachine(keyword, type));

@@ -66,6 +66,7 @@
         BREAK,
         SWITCH,
         CASE,
+        DEFAULT,
 
         FUN,
         RETURN,
