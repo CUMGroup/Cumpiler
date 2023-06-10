@@ -15,21 +15,21 @@ namespace Cumpiler.Syntax.Expressions {
             _lexer = lexer;
         }
 
-        /// <summary>
-        /// Generic Parser Method for the different operators in the order of operations
-        /// </summary>
-        /// <param name="nextOperator">Next operator group method in the order of operations</param>
-        /// <param name="tokenToOperator">Mapping of the operator tokens in the group to specific functions</param>
-        /// <returns></returns>
+        /** <summary>
+        * Generic Parser Method for an expr of form<br></br> 'expr: <paramref name="nextOperator"/> (VALIDTOKEN <paramref name="nextOperator"/>)*'
+        * </summary>
+        * <param name="nextOperator">Next operator group method in the order of operations</param>
+        * <param name="tokenToOperator">Mapping of the operator tokens in the group to specific functions</param>
+        * <returns></returns> **/
         private ExpressionNode ParseChainedOperator(Func<ExpressionNode> nextOperator, Func<TokenType, bool> validToken) {
             ExpressionNode lhs = nextOperator();
 
             while (true) {
                 bool nextValid = validToken(_lexer.LookAhead.Type);
-
+                
                 if (!nextValid)
                     return lhs;
-
+                
                 var op = _lexer.Advance();
 
                 ExpressionNode rhs = nextOperator();
@@ -37,6 +37,12 @@ namespace Cumpiler.Syntax.Expressions {
             }
         }
 
+        /** <summary>
+        * Generic Parser Method for an expr of form<br></br> 'expr: <paramref name="nextOperator"/> (VALIDTOKEN <paramref name="nextOperator"/>)?'
+        * </summary>
+        * <param name="nextOperator">Next operator group method in the order of operations</param>
+        * <param name="tokenToOperator">Mapping of the operator tokens in the group to specific functions</param>
+        * <returns></returns> **/
         private ExpressionNode ParseSingleOperator(Func<ExpressionNode> nextOperator, Func<TokenType, bool> validToken) {
             ExpressionNode lhs = nextOperator();
             if(validToken(_lexer.LookAhead.Type)) {
