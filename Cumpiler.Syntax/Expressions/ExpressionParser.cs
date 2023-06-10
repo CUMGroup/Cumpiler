@@ -21,7 +21,7 @@ namespace Cumpiler.Syntax.Expressions {
         /// <param name="nextOperator">Next operator group method in the order of operations</param>
         /// <param name="tokenToOperator">Mapping of the operator tokens in the group to specific functions</param>
         /// <returns></returns>
-        private ExpressionNode ParseOperator(Func<ExpressionNode> nextOperator, Func<TokenType, bool> validToken) {
+        private ExpressionNode ParseChainedOperator(Func<ExpressionNode> nextOperator, Func<TokenType, bool> validToken) {
             ExpressionNode lhs = nextOperator();
 
             while (true) {
@@ -37,11 +37,23 @@ namespace Cumpiler.Syntax.Expressions {
             }
         }
 
+        private ExpressionNode ParseSingleOperator(Func<ExpressionNode> nextOperator, Func<TokenType, bool> validToken) {
+            ExpressionNode lhs = nextOperator();
+            if(validToken(_lexer.LookAhead.Type)) {
+                var op = _lexer.Advance();
+                var rhs = nextOperator();
+                lhs = new BinaryOperatorNode(lhs, rhs, op.Type);
+            }
+            return lhs;
+        }
+
         private Func<TokenType,bool> BuildTokenTypeAcceptFunction(params TokenType[] acceptedTokens) {
             return (t) => acceptedTokens.Contains(t);
         }
 
+
         public ExpressionNode ParseExpression() {
+            // expr: questionMarkExpr
             return ParseQuestionMarkExpr();
         }
 
@@ -59,53 +71,47 @@ namespace Cumpiler.Syntax.Expressions {
 
         private ExpressionNode ParseEqualityExpr() {
             // logicOrExpr (EQUAL logicOrExpr)?
-            var lhs = ParseLogicOrExpr();
-            var op = _lexer.LookAhead.Type;
-            if(_lexer.Accept(TokenType.EQUAL) || _lexer.Accept(TokenType.NOTEQUAL)) {
-                var rhs = ParseLogicOrExpr();
-                lhs = new BinaryOperatorNode(lhs, rhs, op);
-            }
-            return lhs;
+            return ParseSingleOperator(ParseLogicOrExpr, BuildTokenTypeAcceptFunction(TokenType.EQUAL, TokenType.NOTEQUAL));
         }
 
         private ExpressionNode ParseLogicOrExpr() {
-            return ParseOperator(ParseLogicAndExpr, BuildTokenTypeAcceptFunction(TokenType.OR));
+            // logicAndExpr (LOGICOR logicAndExpr)*
+            return ParseChainedOperator(ParseLogicAndExpr, BuildTokenTypeAcceptFunction(TokenType.OR));
         }
 
         private ExpressionNode ParseLogicAndExpr() {
-            return ParseOperator(ParseBitOrExpr, BuildTokenTypeAcceptFunction(TokenType.AND));
+            // bitOrExpr (LOGICAND bitOrExpr)*
+            return ParseChainedOperator(ParseBitOrExpr, BuildTokenTypeAcceptFunction(TokenType.AND));
         }
 
         private ExpressionNode ParseBitOrExpr() {
-            return ParseOperator(ParseBitAndExpr, BuildTokenTypeAcceptFunction(TokenType.BITOR));
+            // bitAndExpr (BITOR bitAndExpr)*
+            return ParseChainedOperator(ParseBitAndExpr, BuildTokenTypeAcceptFunction(TokenType.BITOR));
         }
 
         private ExpressionNode ParseBitAndExpr() {
-            return ParseOperator(ParseCompareExpr, BuildTokenTypeAcceptFunction(TokenType.BITAND, TokenType.BITXOR));
+            // compareExpr ((BITAND | BITXOR) compareExpr)*
+            return ParseChainedOperator(ParseCompareExpr, BuildTokenTypeAcceptFunction(TokenType.BITAND, TokenType.BITXOR));
         }
 
         private ExpressionNode ParseCompareExpr() {
             // shiftExpr ((GREATER | GREATEREQUAL | LESS | LESSEQUAL) shiftExpr)?
-            var lhs = ParseBitshiftExpr();
-            var op = _lexer.LookAhead.Type;
-            if(op is TokenType.GREATER or TokenType.GREATEREQUAL or TokenType.LESS or TokenType.LESSEQUAL) {
-                _lexer.Advance();
-                var rhs = ParseBitshiftExpr();
-                lhs = new BinaryOperatorNode(lhs, rhs, op);
-            }
-            return lhs;
+            return ParseSingleOperator(ParseBitshiftExpr, BuildTokenTypeAcceptFunction(TokenType.GREATER, TokenType.GREATEREQUAL, TokenType.LESS, TokenType.LESSEQUAL));
         }
 
         private ExpressionNode ParseBitshiftExpr() {
-            return ParseOperator(ParseAdditionExpr, BuildTokenTypeAcceptFunction(TokenType.SHIFTLEFT, TokenType.SHIFTRIGHT));
+            // addExpr ((SHIFTLEFT | SHIFTRIGHT) addExpr)*
+            return ParseChainedOperator(ParseAdditionExpr, BuildTokenTypeAcceptFunction(TokenType.SHIFTLEFT, TokenType.SHIFTRIGHT));
         }
 
         private ExpressionNode ParseAdditionExpr() {
-            return ParseOperator(ParseMutliplicationExpr, BuildTokenTypeAcceptFunction(TokenType.PLUS, TokenType.MINUS));
+            // mulExpr ((PLUS | MINUS) mulExpr)*
+            return ParseChainedOperator(ParseMutliplicationExpr, BuildTokenTypeAcceptFunction(TokenType.PLUS, TokenType.MINUS));
         }
 
         private ExpressionNode ParseMutliplicationExpr() {
-            return ParseOperator(ParseUnaryExpr, BuildTokenTypeAcceptFunction(TokenType.MUL, TokenType.DIV));
+            // unaryExpr ((MUL | DIV) unaryExpr)*
+            return ParseChainedOperator(ParseUnaryExpr, BuildTokenTypeAcceptFunction(TokenType.MUL, TokenType.DIV));
         }
 
         private ExpressionNode ParseUnaryExpr() {
@@ -122,9 +128,10 @@ namespace Cumpiler.Syntax.Expressions {
         }
 
         private ExpressionNode ParseLiteralExpr() {
+            // TODO: Refactor for types and vars
             if(_lexer.LookAhead.IsNumber()) {
                 var num = _lexer.Advance();
-                return new LiteralNode(double.Parse(num.Value));
+                return new LiteralNode(double.Parse(num.Value!));
             }else if(_lexer.Accept(TokenType.LPAREN)) {
                 var expr = ParseExpression();
                 _lexer.Expect(TokenType.RPAREN);
