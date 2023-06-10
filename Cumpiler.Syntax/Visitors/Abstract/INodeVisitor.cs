@@ -1,13 +1,14 @@
-﻿using Cumpiler.Syntax.Node.Expressions.Arithmetic;
-using Cumpiler.Syntax.Node.Expressions.Literals;
+﻿using Cumpiler.Syntax.Nodes.Expressions.Arithmetic;
+using Cumpiler.Syntax.Nodes.Expressions.Literals;
 
 namespace Cumpiler.Syntax.Visitors.Abstract {
     internal interface INodeVisitor {
 
-        void VisitBinaryOperator(BinaryOperatorNode node);
+        void Visit(TernaryOperatorNode node);
+        void Visit(BinaryOperatorNode node);
 
-        void VisitUnaryOperator(UnaryOperatorNode node);
+        void Visit(UnaryOperatorNode node);
 
-        void VisitLiteralNode(LiteralNode node);
+        void Visit(LiteralNode node);
     }
 }

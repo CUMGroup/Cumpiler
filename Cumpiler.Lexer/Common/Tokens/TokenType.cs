@@ -33,6 +33,7 @@
 
         // Logic operators
         EQUAL,
+        NOTEQUAL,
         LESS,
         GREATER,
         LESSEQUAL,
@@ -46,6 +47,8 @@
         // Bit operators
         BITAND,
         BITOR,
+        BITXOR,
+        BITCOMPLEMENT,
         SHIFTLEFT,
         SHIFTRIGHT,
 

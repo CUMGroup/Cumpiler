@@ -20,9 +20,12 @@ namespace Cumpiler.Lexer {
             AddKeywordMachine("%", TokenType.MOD);
             AddKeywordMachine("&", TokenType.BITAND);
             AddKeywordMachine("|", TokenType.BITOR);
+            AddKeywordMachine("^", TokenType.BITXOR);
+            AddKeywordMachine("~", TokenType.BITCOMPLEMENT);
             AddKeywordMachine("<<", TokenType.SHIFTLEFT);
             AddKeywordMachine(">>", TokenType.SHIFTRIGHT);
             AddKeywordMachine("==", TokenType.EQUAL);
+            AddKeywordMachine("!=", TokenType.NOTEQUAL);
             AddKeywordMachine("<", TokenType.LESS);
             AddKeywordMachine(">", TokenType.GREATER);
             AddKeywordMachine("<=", TokenType.LESSEQUAL);

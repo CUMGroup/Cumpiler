@@ -8,5 +8,7 @@ namespace Cumpiler.Syntax {
         public Parser(ILexer input) {
             _lexer = input;
         }
+
+        
     }
 }

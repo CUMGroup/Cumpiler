@@ -1,4 +1,4 @@
-﻿namespace Cumpiler.Syntax.Node.Expressions {
+﻿namespace Cumpiler.Syntax.Nodes.Expressions {
     internal abstract class ExpressionNode : Node {
     }
 }
