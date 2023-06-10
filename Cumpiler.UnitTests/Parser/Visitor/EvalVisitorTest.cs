@@ -25,7 +25,7 @@ namespace Cumpiler.UnitTests.Parser.Visitor {
         [Fact]
         public void Eval_Parans() {
             string input = """
-             3 * (2+ 3 * (7 - 5 * (2 / 3)))
+             -3 * (2+ 3 * (7 - 5 * (2 / 3)))
         """;
             ILexer lexer = LexerFactory.CreateLexer(input);
             ExpressionParser parser = new ExpressionParser(lexer);
@@ -35,7 +35,7 @@ namespace Cumpiler.UnitTests.Parser.Visitor {
             var evalVisitor = new AstEvalVisitor();
             expr.AcceptVisitor(evalVisitor);
 
-            Assert.Equal(39, evalVisitor.Value);
+            Assert.Equal(-39, evalVisitor.Value);
         }
 
     }
