@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cumpiler.Lexer\Cumpiler.Lexer.csproj" />
+    <ProjectReference Include="..\Cumpiler.Syntax\Cumpiler.Syntax.csproj" />
   </ItemGroup>
 
 </Project>
