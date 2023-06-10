@@ -65,19 +65,14 @@ namespace Cumpiler.Syntax.Expressions {
 
         private ExpressionNode ParseQuestionMarkExpr() {
             // equalityExpr (QUESTIONMARK equalityExpr DOUBLECOLON equalityExpr)?
-            var lhs = ParseEqualityExpr();
+            var lhs = ParseLogicOrExpr();
             if(_lexer.Accept(TokenType.QUESTIONMARK)) {
-                var trueExpr = ParseEqualityExpr();
+                var trueExpr = ParseLogicOrExpr();
                 _lexer.Expect(TokenType.DOUBLECOLON);
-                var falseExpr = ParseEqualityExpr();
+                var falseExpr = ParseLogicOrExpr();
                 lhs = new TernaryOperatorNode(lhs, trueExpr, falseExpr);
             }
             return lhs;
-        }
-
-        private ExpressionNode ParseEqualityExpr() {
-            // logicOrExpr (EQUAL logicOrExpr)?
-            return ParseSingleOperator(ParseLogicOrExpr, BuildTokenTypeAcceptFunction(TokenType.EQUAL, TokenType.NOTEQUAL));
         }
 
         private ExpressionNode ParseLogicOrExpr() {
@@ -87,7 +82,12 @@ namespace Cumpiler.Syntax.Expressions {
 
         private ExpressionNode ParseLogicAndExpr() {
             // bitOrExpr (LOGICAND bitOrExpr)*
-            return ParseChainedOperator(ParseBitOrExpr, BuildTokenTypeAcceptFunction(TokenType.AND));
+            return ParseChainedOperator(ParseEqualityExpr, BuildTokenTypeAcceptFunction(TokenType.AND));
+        }
+
+        private ExpressionNode ParseEqualityExpr() {
+            // logicOrExpr (EQUAL logicOrExpr)?
+            return ParseSingleOperator(ParseBitOrExpr, BuildTokenTypeAcceptFunction(TokenType.EQUAL, TokenType.NOTEQUAL));
         }
 
         private ExpressionNode ParseBitOrExpr() {
