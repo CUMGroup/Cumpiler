@@ -27,7 +27,7 @@ internal class AstEvalVisitor : INodeVisitor {
 
     public void Visit(UnaryOperatorNode node) {
         node.Arg.AcceptVisitor(this);
-        Value = UnaryOperators.GetOperation(node.Operation, node.Arg.Type) (Value);
+        Value = UnaryOperators.GetOperation(node.Operation, node.ContentValue, node.Arg.Type) (Value);
     }
 
     public void Visit(LiteralNode node) {

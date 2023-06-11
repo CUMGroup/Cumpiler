@@ -12,9 +12,29 @@ namespace Cumpiler.Syntax.Symbols {
         public static readonly TypeSymbol String = new TypeSymbol("string");
         public static readonly TypeSymbol Char = new TypeSymbol("char");
 
-
-        private TypeSymbol(string name) 
+        internal TypeSymbol(string name) 
             : base(name) {}
+
+        public static TypeSymbol? TypeExists(string name) {
+            if (name == None.Name)
+                return None;
+            if (name == Error.Name)
+                return Error;
+            if (name == Bool.Name)
+                return Bool;
+            if (name == Int.Name)
+                return Int;
+            if (name == Double.Name)
+                return Double;
+            if (name == Float.Name)
+                return Float;
+            if (name == String.Name)
+                return String;
+            if (name == Char.Name)
+                return Char;
+
+            return null;
+        }
 
         public override SymbolKind Kind => SymbolKind.TYPE;
     }

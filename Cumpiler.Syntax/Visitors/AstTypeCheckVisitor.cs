@@ -42,7 +42,7 @@ namespace Cumpiler.Syntax.Visitors {
             if(node.Arg.Type == TypeSymbol.Error) {
                 node.Type = TypeSymbol.Error;
             }
-            node.Type = UnaryOperators.GetTypeFromOperation(node.Operation, node.Arg.Type);
+            node.Type = UnaryOperators.GetTypeFromOperation(node.Operation, node.ContentValue, node.Arg.Type);
         }
 
         public void Visit(LiteralNode node) {

@@ -31,6 +31,8 @@
         DIV,
         MOD,
 
+        CAST,
+
         // Logic operators
         EQUAL,
         NOTEQUAL,

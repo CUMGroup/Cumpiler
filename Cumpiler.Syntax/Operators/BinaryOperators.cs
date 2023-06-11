@@ -110,8 +110,9 @@ namespace Cumpiler.Syntax.Operators {
                     return GetMinusOperation(lhs, rhs);
                 case TokenType.DIV:
                 case TokenType.MOD:
+                    return GetDivModOperators(op,lhs, rhs);
                 case TokenType.MUL:
-                    return GetDotOperation(op, lhs, rhs);
+                    return GetMulOperation(lhs, rhs);
                 case TokenType.EQUAL:
                     return (a, b) => a == b;
                 case TokenType.NOTEQUAL:
@@ -259,8 +260,18 @@ namespace Cumpiler.Syntax.Operators {
             }
 
             if (!firstIteration)
-                throw new CompilerException($"Unknown types {rhs}, {lhs} for operation {op}");
-            return (a, b) => GetCompareOperation(op, lhs, rhs, false)(b, a);
+                throw new CompilerException($"Unknown types {lhs}, {rhs} for operation {op}");
+            // 2 < 3 -> 3 > 2
+            var newOp = op;
+            if (op == TokenType.LESS)
+                newOp = TokenType.GREATER;
+            if (op == TokenType.GREATER)
+                newOp = TokenType.LESS;
+            if (op == TokenType.LESSEQUAL)
+                newOp = TokenType.GREATEREQUAL;
+            if (op == TokenType.GREATEREQUAL)
+                newOp = TokenType.LESSEQUAL;
+            return (a, b) => GetCompareOperation(newOp, rhs, lhs, false)(b, a);
         }
 
         private static Func<object, object, object> GetPlusOperation(TypeSymbol lhs, TypeSymbol rhs, bool firstIteration = true) {
@@ -305,11 +316,11 @@ namespace Cumpiler.Syntax.Operators {
                 return (a, b) => (char)a + (string)b;
 
             if (!firstIteration)
-                throw new CompilerException($"Unknown types {rhs}, {lhs} for operation PLUS");
-            return (a,b) => GetPlusOperation(lhs,rhs, false)(b, a);
+                throw new CompilerException($"Unknown types {lhs}, {rhs} for operation PLUS");
+            return (a,b) => GetPlusOperation(rhs, lhs, false)(b, a);
         }
 
-        private static Func<object, object, object> GetMinusOperation(TypeSymbol lhs, TypeSymbol rhs, bool firstIteration = true) {
+        private static Func<object, object, object> GetMinusOperation(TypeSymbol lhs, TypeSymbol rhs) {
             // same op
             if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Int)
                 return (a, b) => (int)a - (int)b;
@@ -338,12 +349,27 @@ namespace Cumpiler.Syntax.Operators {
             if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Char)
                 return (a, b) => (float)a - (char)b;
 
-            if (!firstIteration)
-                throw new CompilerException($"Unknown types {rhs}, {lhs} for operation MINUS");
-            return (a, b) => GetMinusOperation(lhs, rhs, false)(b, a);
+            // reversed
+
+            if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Int)
+                return (a, b) => (double)a - (int)b;
+            if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Int)
+                return (a, b) => (float)a - (int)b;
+            if (lhs == TypeSymbol.Char && rhs == TypeSymbol.Int)
+                return (a, b) => (char)a - (int)b;
+
+            if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Double)
+                return (a, b) => (float)a - (double)b;
+            if (lhs == TypeSymbol.Char && rhs == TypeSymbol.Double)
+                return (a, b) => (char)a - (double)b;
+
+            if (lhs == TypeSymbol.Char && rhs == TypeSymbol.Float)
+                return (a, b) => (char)a - (float)b;
+
+            throw new CompilerException($"Unknown types {lhs}, {rhs} for operation MINUS");
         }
 
-        private static Func<object, object, object> GetDotOperation(TokenType op, TypeSymbol lhs, TypeSymbol rhs, bool firstIteration = true) {
+        private static Func<object, object, object> GetDivModOperators(TokenType op, TypeSymbol lhs, TypeSymbol rhs) {
             switch(op) {
                 case TokenType.DIV:
                     // same op
@@ -363,26 +389,18 @@ namespace Cumpiler.Syntax.Operators {
                     // first double
                     if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Float)
                         return (a, b) => (double)a / (float)b;
-                    break;
-                case TokenType.MUL:
-                    // same op
-                    if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Int)
-                        return (a, b) => (int)a * (int)b;
-                    if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Double)
-                        return (a, b) => (double)a * (double)b;
-                    if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Float)
-                        return (a, b) => (float)a * (float)b;
 
-                    // first int
-                    if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Double)
-                        return (a, b) => (int)a * (double)b;
-                    if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Float)
-                        return (a, b) => (int)a * (float)b;
+                    // reversed 
 
-                    // first double
-                    if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Float)
-                        return (a, b) => (double)a * (float)b;
+                    if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Int)
+                        return (a, b) => (double)a / (int)b;
+                    if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Int)
+                        return (a, b) => (float)a / (int)b;
+
+                    if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Double)
+                        return (a, b) => (float)a / (double)b;
                     break;
+
                 case TokenType.MOD:
                     // same op
                     if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Int)
@@ -401,15 +419,46 @@ namespace Cumpiler.Syntax.Operators {
                     // first double
                     if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Float)
                         return (a, b) => (double)a % (float)b;
-                    break;
 
+                    // reversed 
+
+                    if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Int)
+                        return (a, b) => (double)a % (int)b;
+                    if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Int)
+                        return (a, b) => (float)a % (int)b;
+
+                    if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Double)
+                        return (a, b) => (float)a % (double)b;
+                    break;
                 default:
                     throw new CompilerException($"Unknown dot operation {op}");
             }
+            throw new CompilerException($"Unknown types {lhs}, {rhs} for operation {op}");
+        }
+
+        private static Func<object, object, object> GetMulOperation(TypeSymbol lhs, TypeSymbol rhs, bool firstIteration = true) {
+
+            // same op
+            if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Int)
+                return (a, b) => (int)a * (int)b;
+            if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Double)
+                return (a, b) => (double)a * (double)b;
+            if (lhs == TypeSymbol.Float && rhs == TypeSymbol.Float)
+                return (a, b) => (float)a * (float)b;
+
+            // first int
+            if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Double)
+                return (a, b) => (int)a * (double)b;
+            if (lhs == TypeSymbol.Int && rhs == TypeSymbol.Float)
+                return (a, b) => (int)a * (float)b;
+
+            // first double
+            if (lhs == TypeSymbol.Double && rhs == TypeSymbol.Float)
+                return (a, b) => (double)a * (float)b;
 
             if (!firstIteration)
-                throw new CompilerException($"Unknown types {rhs}, {lhs} for operation {op}");
-            return (a, b) => GetDotOperation(op, lhs, rhs, false)(b, a);
+                throw new CompilerException($"Unknown types {lhs}, {rhs} for operation MUL");
+            return (a, b) => GetMulOperation(rhs, lhs, false)(b, a);
         }
 
     }
