@@ -5,6 +5,7 @@ using Cumpiler.Lexer.Helpers;
 using Cumpiler.Syntax.Nodes.Expressions;
 using Cumpiler.Syntax.Nodes.Expressions.Arithmetic;
 using Cumpiler.Syntax.Nodes.Expressions.Literals;
+using System;
 
 namespace Cumpiler.Syntax.Expressions {
     internal class ExpressionParser {
@@ -135,10 +136,14 @@ namespace Cumpiler.Syntax.Expressions {
 
         private ExpressionNode ParseLiteralExpr() {
             // TODO: Refactor for types and vars
-            if(_lexer.LookAhead.IsNumber()) {
-                var num = _lexer.Advance();
-                return new LiteralNode(double.Parse(num.Value!));
-            }else if(_lexer.Accept(TokenType.LPAREN)) {
+            var num = _lexer.LookAhead;
+            if (_lexer.Accept(TokenType.INTEGER)) {
+                return new LiteralNode(new Types.Numbers.Int32(int.Parse(num.Value!)));
+            } else if (_lexer.Accept(TokenType.DOUBLE)) {
+                return new LiteralNode(new Types.Numbers.Double(double.Parse(num.Value!)));
+            }else if(_lexer.Accept(TokenType.FLOAT)) {
+                return new LiteralNode(new Types.Numbers.Float(float.Parse(num.Value!)));
+            } else if(_lexer.Accept(TokenType.LPAREN)) {
                 var expr = ParseExpression();
                 _lexer.Expect(TokenType.RPAREN);
                 return expr;

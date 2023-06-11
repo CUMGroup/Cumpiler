@@ -7,12 +7,24 @@ namespace Cumpiler.Lexer.Helpers {
             return token.Type is TokenType.INTEGER or TokenType.FLOAT or TokenType.DOUBLE;
         }
 
+        public static bool IsNumber(this TokenType token) {
+            return token is TokenType.INTEGER or TokenType.FLOAT or TokenType.DOUBLE;
+        }
+
         public static bool IsString(this Token token) {
             return token.Type is TokenType.STRING or TokenType.CHAR;
         }
 
+        public static bool IsString(this TokenType token) {
+            return token is TokenType.STRING or TokenType.CHAR;
+        }
+
         public static bool IsBool(this Token token) {
             return token.Type is TokenType.TRUE or TokenType.FALSE;
+        }
+
+        public static bool IsBool(this TokenType token) {
+            return token is TokenType.TRUE or TokenType.FALSE;
         }
 
         public static bool IsSkipable(this Token token) {
