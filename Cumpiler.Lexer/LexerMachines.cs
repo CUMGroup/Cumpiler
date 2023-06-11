@@ -65,6 +65,7 @@ namespace Cumpiler.Lexer {
             AddKeywordMachine("true", TokenType.TRUE);
             AddKeywordMachine("false", TokenType.FALSE);
 
+            AddMachine(new CastMachine());
             AddMachine(new IdentifierMachine());
         }
     }

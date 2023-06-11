@@ -5,6 +5,8 @@ using Cumpiler.Lexer.Helpers;
 using Cumpiler.Syntax.Nodes.Expressions;
 using Cumpiler.Syntax.Nodes.Expressions.Arithmetic;
 using Cumpiler.Syntax.Nodes.Expressions.Literals;
+using System;
+using System.Globalization;
 
 namespace Cumpiler.Syntax.Expressions {
     internal class ExpressionParser {
@@ -121,7 +123,7 @@ namespace Cumpiler.Syntax.Expressions {
         }
 
         private ExpressionNode ParseUnaryExpr() {
-            // (PLUS | MINUS | NOT | COMPLEMENT)? literalExpr
+            // (PLUS | MINUS | NOT | COMPLEMENT | CAST)? literalExpr
             if(_lexer.Accept(TokenType.PLUS)) {
                 // nop
                 return ParseLiteralExpr();
@@ -129,19 +131,34 @@ namespace Cumpiler.Syntax.Expressions {
                 var op = _lexer.Advance();
                 var rhs = ParseLiteralExpr();
                 return new UnaryOperatorNode(rhs, op.Type);
+            }else if(_lexer.LookAhead.Type is TokenType.CAST) {
+                var op = _lexer.Advance();
+                var rhs = ParseLiteralExpr();
+                return new UnaryOperatorNode(rhs, op.Type, op.Value![1..^1]);
             }
             return ParseLiteralExpr();
         }
 
         private ExpressionNode ParseLiteralExpr() {
             // TODO: Refactor for types and vars
-            if(_lexer.LookAhead.IsNumber()) {
-                var num = _lexer.Advance();
-                return new LiteralNode(double.Parse(num.Value!));
-            }else if(_lexer.Accept(TokenType.LPAREN)) {
+            var num = _lexer.LookAhead;
+            if (_lexer.Accept(TokenType.INTEGER)) {
+                return new LiteralNode(int.Parse(num.Value!));
+            } else if (_lexer.Accept(TokenType.DOUBLE)) {
+                return new LiteralNode(double.Parse(num.Value!, CultureInfo.InvariantCulture));
+            } else if (_lexer.Accept(TokenType.FLOAT)) {
+                return new LiteralNode(float.Parse(num.Value!, CultureInfo.InvariantCulture));
+            } else if (_lexer.Accept(TokenType.CHAR)) {
+                return new LiteralNode(char.Parse(num.Value![1..^1]));
+            } else if (_lexer.Accept(TokenType.STRING)) { 
+                return new LiteralNode(num.Value![1..^1]);
+            } else if(_lexer.Accept(TokenType.LPAREN)) {
                 var expr = ParseExpression();
                 _lexer.Expect(TokenType.RPAREN);
                 return expr;
+            }else if(_lexer.LookAhead.Type is TokenType.TRUE or TokenType.FALSE) {
+                var lit = _lexer.Advance();
+                return new LiteralNode(bool.Parse(lit.Value!));
             }
             throw new NotImplementedException("Vars not implemented yet!");
         }
