@@ -35,7 +35,7 @@ namespace Cumpiler.Syntax.Expressions {
                 var op = _lexer.Advance();
 
                 ExpressionNode rhs = nextOperator();
-                lhs = new BinaryOperatorNode(lhs, rhs, op.Type);
+                lhs = new BinaryOperatorNode(lhs, rhs, op.Type, op.Position);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Cumpiler.Syntax.Expressions {
             if(validToken(_lexer.LookAhead.Type)) {
                 var op = _lexer.Advance();
                 var rhs = nextOperator();
-                lhs = new BinaryOperatorNode(lhs, rhs, op.Type);
+                lhs = new BinaryOperatorNode(lhs, rhs, op.Type, op.Position);
             }
             return lhs;
         }
@@ -68,11 +68,12 @@ namespace Cumpiler.Syntax.Expressions {
         private ExpressionNode ParseQuestionMarkExpr() {
             // equalityExpr (QUESTIONMARK equalityExpr DOUBLECOLON equalityExpr)?
             var lhs = ParseLogicOrExpr();
+            var token = _lexer.LookAhead;
             if(_lexer.Accept(TokenType.QUESTIONMARK)) {
                 var trueExpr = ParseLogicOrExpr();
                 _lexer.Expect(TokenType.DOUBLECOLON);
                 var falseExpr = ParseLogicOrExpr();
-                lhs = new TernaryOperatorNode(lhs, trueExpr, falseExpr);
+                lhs = new TernaryOperatorNode(lhs, trueExpr, falseExpr, token.Position);
             }
             return lhs;
         }
@@ -130,11 +131,11 @@ namespace Cumpiler.Syntax.Expressions {
             }else if(_lexer.LookAhead.Type is TokenType.MINUS or TokenType.NOT or TokenType.BITCOMPLEMENT) {
                 var op = _lexer.Advance();
                 var rhs = ParseLiteralExpr();
-                return new UnaryOperatorNode(rhs, op.Type);
+                return new UnaryOperatorNode(rhs, op.Type, op.Position);
             }else if(_lexer.LookAhead.Type is TokenType.CAST) {
                 var op = _lexer.Advance();
                 var rhs = ParseLiteralExpr();
-                return new UnaryOperatorNode(rhs, op.Type, op.Value![1..^1]);
+                return new UnaryOperatorNode(rhs, op.Type, op.Value![1..^1], op.Position);
             }
             return ParseLiteralExpr();
         }
@@ -143,22 +144,22 @@ namespace Cumpiler.Syntax.Expressions {
             // TODO: Refactor for types and vars
             var num = _lexer.LookAhead;
             if (_lexer.Accept(TokenType.INTEGER)) {
-                return new LiteralNode(int.Parse(num.Value!));
+                return new LiteralNode(int.Parse(num.Value!), num.Position);
             } else if (_lexer.Accept(TokenType.DOUBLE)) {
-                return new LiteralNode(double.Parse(num.Value!, CultureInfo.InvariantCulture));
+                return new LiteralNode(double.Parse(num.Value!, CultureInfo.InvariantCulture), num.Position);
             } else if (_lexer.Accept(TokenType.FLOAT)) {
-                return new LiteralNode(float.Parse(num.Value!, CultureInfo.InvariantCulture));
+                return new LiteralNode(float.Parse(num.Value!, CultureInfo.InvariantCulture), num.Position);
             } else if (_lexer.Accept(TokenType.CHAR)) {
-                return new LiteralNode(char.Parse(num.Value![1..^1]));
+                return new LiteralNode(char.Parse(num.Value![1..^1]), num.Position);
             } else if (_lexer.Accept(TokenType.STRING)) { 
-                return new LiteralNode(num.Value![1..^1]);
+                return new LiteralNode(num.Value![1..^1], num.Position);
             } else if(_lexer.Accept(TokenType.LPAREN)) {
                 var expr = ParseExpression();
                 _lexer.Expect(TokenType.RPAREN);
                 return expr;
             }else if(_lexer.LookAhead.Type is TokenType.TRUE or TokenType.FALSE) {
                 var lit = _lexer.Advance();
-                return new LiteralNode(bool.Parse(lit.Value!));
+                return new LiteralNode(bool.Parse(lit.Value!), lit.Position);
             }
             throw new NotImplementedException("Vars not implemented yet!");
         }

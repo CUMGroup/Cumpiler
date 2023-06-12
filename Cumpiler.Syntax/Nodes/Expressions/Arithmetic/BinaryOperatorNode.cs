@@ -9,7 +9,7 @@ namespace Cumpiler.Syntax.Nodes.Expressions.Arithmetic {
 
         public TokenType Operation { get; init; }
 
-        public BinaryOperatorNode(ExpressionNode lhs, ExpressionNode rhs, TokenType op) {
+        public BinaryOperatorNode(ExpressionNode lhs, ExpressionNode rhs, TokenType op, TokenPos pos) : base(pos) {
             Lhs = lhs;
             Rhs = rhs;
             Operation = op;

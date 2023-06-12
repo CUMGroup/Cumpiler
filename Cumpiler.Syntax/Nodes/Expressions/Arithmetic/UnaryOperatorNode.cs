@@ -10,9 +10,9 @@ namespace Cumpiler.Syntax.Nodes.Expressions.Arithmetic {
 
         public object? ContentValue { get; set; }
 
-        public UnaryOperatorNode(ExpressionNode arg, TokenType op) : this(arg, op, null) {}
+        public UnaryOperatorNode(ExpressionNode arg, TokenType op, TokenPos pos) : this(arg, op, null, pos) {}
 
-        public UnaryOperatorNode(ExpressionNode arg, TokenType op, object? val) {
+        public UnaryOperatorNode(ExpressionNode arg, TokenType op, object? val, TokenPos pos) : base(pos) {
             Arg = arg;
             Operation = op;
             ContentValue = val;

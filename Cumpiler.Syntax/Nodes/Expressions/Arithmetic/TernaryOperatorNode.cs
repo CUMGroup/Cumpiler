@@ -1,4 +1,5 @@
-﻿using Cumpiler.Syntax.Nodes.Expressions;
+﻿using Cumpiler.Lexer.Common.Tokens;
+using Cumpiler.Syntax.Nodes.Expressions;
 using Cumpiler.Syntax.Visitors.Abstract;
 
 namespace Cumpiler.Syntax;
@@ -8,7 +9,7 @@ internal class TernaryOperatorNode : ExpressionNode {
     public ExpressionNode ExprTrue { get; init; }
     public ExpressionNode ExprFalse { get; init; }
 
-    public TernaryOperatorNode(ExpressionNode expr, ExpressionNode exprTrue, ExpressionNode exprFalse) {
+    public TernaryOperatorNode(ExpressionNode expr, ExpressionNode exprTrue, ExpressionNode exprFalse, TokenPos pos) : base(pos) {
         Expr = expr;
         ExprTrue = exprTrue;
         ExprFalse = exprFalse;

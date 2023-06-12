@@ -1,4 +1,5 @@
 ﻿using Cumpiler.Lexer.Common.Exceptions;
+using Cumpiler.Lexer.Common.Tokens;
 using Cumpiler.Syntax.Symbols;
 using Cumpiler.Syntax.Visitors.Abstract;
 
@@ -7,7 +8,7 @@ namespace Cumpiler.Syntax.Nodes.Expressions.Literals {
 
         public object Args { get; init; }
 
-        public LiteralNode(object args) {
+        public LiteralNode(object args, TokenPos pos) : base(pos) {
             if (args.GetType() == typeof(int)) {
                 Type = TypeSymbol.Int;
             } else if (args.GetType() == typeof(double)) {
