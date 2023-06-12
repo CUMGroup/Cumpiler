@@ -1,4 +1,6 @@
-﻿using Cumpiler.Syntax.Nodes.Expressions.Arithmetic;
+﻿using Cumpiler.Lexer.Common.Exceptions;
+using Cumpiler.Lexer.Diagnostics;
+using Cumpiler.Syntax.Nodes.Expressions.Arithmetic;
 using Cumpiler.Syntax.Nodes.Expressions.Literals;
 using Cumpiler.Syntax.Operators;
 using Cumpiler.Syntax.Symbols;
@@ -17,10 +19,12 @@ namespace Cumpiler.Syntax.Visitors {
 
             if(node.Expr.Type != TypeSymbol.Bool) {
                 node.Type = TypeSymbol.Error;
+                DiagnosticsBag.ThrowCompilerException("Expression is not of type Bool", "Condition must evaluate to Bool", node.Expr.TokenPos);
             }
 
             if(node.ExprTrue.Type != node.ExprFalse.Type) {
                 node.Type = TypeSymbol.Error;
+                DiagnosticsBag.ThrowCompilerException($"Found types {node.ExprTrue.Type}, {node.ExprFalse.Type}", "Types in ternary expression must match!", node.TokenPos);
             }
 
             node.Type = node.ExprTrue.Type;
@@ -33,7 +37,11 @@ namespace Cumpiler.Syntax.Visitors {
             if (node.Lhs.Type == TypeSymbol.Error || node.Rhs.Type == TypeSymbol.Error) {
                 node.Type = TypeSymbol.Error;
             }
-            node.Type = BinaryOperators.GetTypeFromOperation(node.Operation, node.Lhs.Type, node.Rhs.Type);
+            try {
+                node.Type = BinaryOperators.GetTypeFromOperation(node.Operation, node.Lhs.Type, node.Rhs.Type);
+            } catch(CompilerException ex) {
+                DiagnosticsBag.ThrowCompilerException(ex.Message, null, node.TokenPos);
+            }
 
         }
 
@@ -42,12 +50,17 @@ namespace Cumpiler.Syntax.Visitors {
             if(node.Arg.Type == TypeSymbol.Error) {
                 node.Type = TypeSymbol.Error;
             }
-            node.Type = UnaryOperators.GetTypeFromOperation(node.Operation, node.ContentValue, node.Arg.Type);
+            try {
+                node.Type = UnaryOperators.GetTypeFromOperation(node.Operation, node.ContentValue, node.Arg.Type);
+            } catch(CompilerException ex) {
+                DiagnosticsBag.ThrowCompilerException(ex.Message, null, node.TokenPos);
+            }
         }
 
         public void Visit(LiteralNode node) {
             if(node.Type == TypeSymbol.None || node.Type == TypeSymbol.Error) {
                 node.Type = TypeSymbol.Error;
+                DiagnosticsBag.ThrowCompilerException("Cannot access type of literal expression", "Literal must have a type! Did the TypeCheck fail?", node.TokenPos);
             }
         }
     }

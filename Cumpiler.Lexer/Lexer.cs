@@ -5,6 +5,7 @@ using Cumpiler.Lexer.Common.Info;
 using Cumpiler.Lexer.Common.Interfaces;
 using Cumpiler.Lexer.Common.Text;
 using Cumpiler.Lexer.Common.Tokens;
+using Cumpiler.Lexer.Diagnostics;
 using Cumpiler.Lexer.Helpers;
 using Cumpiler.Lexer.SateMachines;
 using System.Diagnostics.CodeAnalysis;
@@ -60,19 +61,18 @@ namespace Cumpiler.Lexer
 
         public void Init(string input) {
             _input = new MultilineInputReader(input);
+            DiagnosticsBag.Input = _input;
             _currentToken = null;
             Advance();
         }
 
         [DoesNotReturn]
         public void ThrowCompilerException(string reason, string? expected) {
-            throw CreateCompilerException(reason, expected);
+            DiagnosticsBag.ThrowCompilerException(reason, expected);
         }
 
         public CompilerException CreateCompilerException(string reason, string? expected) {
-            string reasonMsg = $"{reason}\nat line {_input?.LinePos ?? 0}\n{_input?.GetMarkedCodeSnippetAtCurrentPos() ?? ""}";
-            string expectedMsg = !String.IsNullOrWhiteSpace(expected) ? "Expected: " + expected : string.Empty;
-            return new CompilerException($"{reasonMsg}\n{expectedMsg}");
+            return DiagnosticsBag.CreateCompilerException(reason, expected, null);
         }
 
         #endregion
